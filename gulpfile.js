@@ -177,6 +177,15 @@ gulp.task('fonts', function() {
     }));
 });
 
+// Copy web fonts to dist
+gulp.task('files', function() {
+  return gulp.src(['app/files/**'])
+    .pipe(gulp.dest(dist('files')))
+    .pipe($.size({
+      title: 'files'
+    }));
+});
+
 // Scan your HTML for assets & optimize them
 gulp.task('html', function() {
   return optimizeHtmlTask(
@@ -216,7 +225,7 @@ gulp.task('cache-config', function(callback) {
     'index.html',
     './',
     'bower_components/webcomponentsjs/webcomponents-lite.min.js',
-    '{elements,scripts,styles}/**/*.*'],
+    '{files,elements,scripts,styles}/**/*.*'],
     {cwd: dir}, function(error, files) {
     if (error) {
       callback(error);
@@ -255,7 +264,7 @@ gulp.task('serve', ['lint', 'styles', 'elements', 'images'], function() {
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
-    // https: true,
+    https: true,
     server: {
       baseDir: ['.tmp', 'app'],
       middleware: [historyApiFallback()],
@@ -301,8 +310,8 @@ gulp.task('default', ['clean'], function(cb) {
   runSequence(
     ['copy', 'styles'],
     'elements',
-    ['lint', 'images', 'fonts', 'html'],
-    'vulcanize', // 'cache-config',
+    ['lint', 'images', 'fonts', 'files', 'html'],
+    'vulcanize', 'cache-config',
     cb);
 });
 
